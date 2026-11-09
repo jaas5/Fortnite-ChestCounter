@@ -794,6 +794,11 @@ List<(string Label, Action Run, string? About)> Items()
                 L.T("Vérifiées sur GitHub au démarrage (le seul accès réseau de l'outil). Proposées : les nouveautés s'affichent et tu choisis. Automatiques : installées entre deux parties.",
                     "Checked on GitHub at startup (the only network access of the tool). Offered: what's new is shown and you choose. Automatic: installed between two matches.",
                     "Se comprueban en GitHub al iniciar (único acceso a la red). Propuestas: se muestran las novedades y tú eliges. Automáticas: se instalan entre dos partidas.")));
+            var webhookState = string.IsNullOrWhiteSpace(config.DiscordWebhookUrl) ? L.T("désactivé", "off", "desactivado") : L.T("configuré", "configured", "configurado");
+            list.Add(Item($"{L.T("Discord Webhook", "Discord Webhook", "Discord Webhook")} : {webhookState}", ChangeDiscordWebhook,
+                L.T("Envoie automatiquement les résultats au serveur Discord après chaque partie. Entrée pour modifier.",
+                    "Automatically sends match results to your Discord server. Enter to edit.",
+                    "Envía automáticamente los resultados a tu servidor de Discord. Intro para modificar.")));
             list.Add(Item($"{L.T("Dossier des replays", "Replays folder", "Carpeta de repeticiones")} : {config.DemosFolder}", ChangeDemosFolder,
                 L.T("Là où Fortnite enregistre ses replays. À changer seulement si tu l'as déplacé. Entrée pour le modifier.",
                     "Where Fortnite saves its replays. Only change it if you moved it. Enter to edit.",
@@ -1145,6 +1150,25 @@ void ToggleStartWithFortnite()
         "Open with Fortnite: not possible here, run the counter from ChestCounter.exe.",
         "Abrir con Fortnite: no es posible aquí, abre el contador desde ChestCounter.exe."));
     Console.ResetColor();
+}
+
+void ChangeDiscordWebhook()
+{
+    ConsoleUi.Screen(appName, L.T("webhook Discord", "Discord webhook", "webhook de Discord"));
+    ConsoleUi.Text(L.T("Webhook actuel :", "Current webhook:", "Webhook actual:"));
+    ConsoleUi.Hint("  " + (string.IsNullOrWhiteSpace(config.DiscordWebhookUrl) ? L.T("(non configuré)", "(not configured)", "(no configurado)") : config.DiscordWebhookUrl));
+    ConsoleUi.Blank();
+    ConsoleUi.Hint(L.T("Colle l'URL du webhook de ton serveur Discord puis Entrée. Échap pour annuler.",
+        "Paste the Discord webhook URL of your server, then Enter. Esc to cancel.",
+        "Pega la URL del webhook de tu servidor de Discord y pulsa Intro. Esc para cancelar."));
+    ConsoleUi.Blank();
+    var url = ConsoleUi.Input(L.T("URL Webhook : ", "Webhook URL: ", "URL Webhook: "), config.DiscordWebhookUrl ?? "");
+    if (url != config.DiscordWebhookUrl)
+    {
+        config.DiscordWebhookUrl = string.IsNullOrWhiteSpace(url) ? null : url.Trim();
+        try { store.SaveConfig(config); } catch { /* ignore */ }
+        Console.WriteLine(L.T("Discord Webhook mis à jour.", "Discord Webhook updated.", "Discord Webhook actualizado."));
+    }
 }
 
 void ChangeDemosFolder()

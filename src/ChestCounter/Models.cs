@@ -118,6 +118,9 @@ public sealed class Config
 
     /// <summary>Minimum delay between two readings of the replay in progress (seconds, 10 minimum).</summary>
     public int LiveIntervalSeconds { get; set; } = 30;
+
+    /// <summary>Discord webhook URL for sending match results automatically.</summary>
+    public string? DiscordWebhookUrl { get; set; }
 }
 
 public sealed class TrackerData

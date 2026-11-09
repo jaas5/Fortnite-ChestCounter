@@ -531,6 +531,7 @@ public sealed class Tracker
             + (destroyed > 0 ? L.T($" (dont {L.Count(destroyed, "détruit", "", "")})", $" ({destroyed} destroyed)", $" ({L.Count(destroyed, "", "", "destruido")})") : ""));
         Console.ResetColor();
         Console.WriteLine($"  →  total{L.T(" : ", ": ", ": ")}{L.N(total)}");
+        DiscordWebhook.NotifyMatch(_config.DiscordWebhookUrl, m, total);
 
         foreach (var find in m.TreasureFinds)
         {
